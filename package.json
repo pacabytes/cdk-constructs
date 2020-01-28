@@ -1,0 +1,21 @@
+{
+  "name": "cdk-constructs",
+  "devDependencies": {
+    "lerna": "^3.20.2"
+  },
+  "version": "1.0.0",
+  "scripts": {
+    "publish": "lerna publish"
+  },
+  "author": "Martin Trenker <martin@pacabytes.io>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pacabytes/cdk-constructs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pacabytes/cdk-constructs/issues"
+  },
+  "homepage": "https://github.com/pacabytes/cdk-constructs#readme",
+  "description": "Monorepo for pacabytes CDK constructs"
+}
