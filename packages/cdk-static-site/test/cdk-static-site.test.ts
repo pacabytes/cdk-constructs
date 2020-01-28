@@ -1,5 +1,5 @@
-import { expect as expectCDK, haveResource, SynthUtils } from '@aws-cdk/assert';
-import { App, Stack, SecretValue } from '@aws-cdk/core';
+import { expect as expectCDK, haveResource } from '@aws-cdk/assert';
+import { App, Stack } from '@aws-cdk/core';
 import { StaticSite } from '../lib';
 
 describe('static site construct', () => {
