@@ -3,8 +3,10 @@ import { Bucket } from "@aws-cdk/aws-s3";
 import { Artifact, Pipeline } from "@aws-cdk/aws-codepipeline";
 import { GitHubSourceAction, CodeBuildAction, S3DeployAction } from "@aws-cdk/aws-codepipeline-actions";
 import { PipelineProject } from "@aws-cdk/aws-codebuild";
-import { ARecord, IHostedZone, RecordTarget } from "@aws-cdk/aws-route53";
-import { BucketWebsiteTarget } from "@aws-cdk/aws-route53-targets";
+import { ARecord, IHostedZone, RecordTarget, AaaaRecord, ARecordProps, AaaaRecordProps } from "@aws-cdk/aws-route53";
+import { BucketWebsiteTarget, CloudFrontTarget } from "@aws-cdk/aws-route53-targets";
+import { CloudFrontWebDistribution, ViewerCertificate } from "@aws-cdk/aws-cloudfront";
+import { Certificate } from "@aws-cdk/aws-certificatemanager";
 
 export interface CreateDomainConfig {
   zone: IHostedZone,
@@ -17,9 +19,16 @@ export interface CreatePipelineConfig {
   branch: string;
 }
 
+export interface CreateCloudFrontConfig {
+  zone: IHostedZone,
+  alias: string;
+  certificate: Certificate
+}
+
 export interface StaticSiteProps {
   pipelineConfig?: CreatePipelineConfig;
   domainConfig?: CreateDomainConfig;
+  cloudFrontConfig?: CreateCloudFrontConfig;
 }
 
 export class StaticSite extends Construct {
@@ -31,20 +40,23 @@ export class StaticSite extends Construct {
   constructor(scope: Construct, id: string, props: StaticSiteProps = {}) {
     super(scope, id);
 
-    const { pipelineConfig, domainConfig } = props;
+    const { pipelineConfig, domainConfig, cloudFrontConfig } = props;
 
     this.siteBucket = new Bucket(this, "SiteBucket", {
       publicReadAccess: true,
     })
 
     if (pipelineConfig) {
-      this.createPipeline(pipelineConfig)
+      this.createPipeline(pipelineConfig);
     }
 
     if (domainConfig) {
       this.createDomain(domainConfig);
     }
 
+    if (cloudFrontConfig) {
+      this.createCloudfrontDistribution(cloudFrontConfig);
+    }
   }
 
   private createPipeline(pipelineConfig: CreatePipelineConfig) {
@@ -100,5 +112,34 @@ export class StaticSite extends Construct {
       zone: domainConfig.zone,
       target: RecordTarget.fromAlias(new BucketWebsiteTarget(this.siteBucket))
     })
+  }
+
+  private createCloudfrontDistribution(cloudfrontConfig: CreateCloudFrontConfig) {
+
+    const { alias, zone, certificate } = cloudfrontConfig;
+
+    const viewerCertificate = ViewerCertificate.fromAcmCertificate(certificate, {
+      aliases: [alias]
+    });
+
+    const distribution = new CloudFrontWebDistribution(this, "CloudFrontDistribution", {
+      originConfigs: [{
+        s3OriginSource: {
+          s3BucketSource: this.siteBucket
+        },
+        behaviors: [{
+          isDefaultBehavior: true
+        }]
+      }],
+      viewerCertificate
+    });
+
+    const recordProps: ARecordProps | AaaaRecordProps = {
+      target: RecordTarget.fromAlias(new CloudFrontTarget(distribution)),
+      zone,
+    };
+
+    new ARecord(this, "CloudFrontARecord", recordProps);
+    new AaaaRecord(this, "CloudFrontAaaaRecord", recordProps);
   }
 }
