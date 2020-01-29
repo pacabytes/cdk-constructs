@@ -17,9 +17,6 @@
     "typescript": "^3.7.5"
   },
   "peerDependencies": {
-    "@aws-cdk/core": "^1.22.0"
-  },
-  "dependencies": {
     "@aws-cdk/aws-codebuild": "^1.22.0",
     "@aws-cdk/aws-codedeploy": "^1.22.0",
     "@aws-cdk/aws-codepipeline": "^1.22.0",
