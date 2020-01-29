@@ -3,16 +3,23 @@ import { Bucket } from "@aws-cdk/aws-s3";
 import { Artifact, Pipeline } from "@aws-cdk/aws-codepipeline";
 import { GitHubSourceAction, CodeBuildAction, S3DeployAction } from "@aws-cdk/aws-codepipeline-actions";
 import { PipelineProject } from "@aws-cdk/aws-codebuild";
+import { ARecord, IHostedZone, RecordTarget } from "@aws-cdk/aws-route53";
+import { BucketWebsiteTarget } from "@aws-cdk/aws-route53-targets";
 
-export interface StaticSiteProps {
-  pipelineConfig?: CreatePipelineConfig;
+export interface CreateDomainConfig {
+  zone: IHostedZone,
+  domainName: string;
 }
-
 export interface CreatePipelineConfig {
   oauthToken: SecretValue;
   owner: string;
   repo: string;
   branch: string;
+}
+
+export interface StaticSiteProps {
+  pipelineConfig?: CreatePipelineConfig;
+  domainConfig?: CreateDomainConfig;
 }
 
 export class StaticSite extends Construct {
@@ -24,7 +31,7 @@ export class StaticSite extends Construct {
   constructor(scope: Construct, id: string, props: StaticSiteProps = {}) {
     super(scope, id);
 
-    const { pipelineConfig } = props;
+    const { pipelineConfig, domainConfig } = props;
 
     this.siteBucket = new Bucket(this, "SiteBucket", {
       publicReadAccess: true,
@@ -32,6 +39,10 @@ export class StaticSite extends Construct {
 
     if (pipelineConfig) {
       this.createPipeline(pipelineConfig)
+    }
+
+    if (domainConfig) {
+      this.createDomain(domainConfig);
     }
 
   }
@@ -82,5 +93,12 @@ export class StaticSite extends Construct {
       stageName: "Deploy",
       actions: [deployAction]
     });
+  }
+
+  private createDomain(domainConfig: CreateDomainConfig) {
+    new ARecord(this, "ARecord", {
+      zone: domainConfig.zone,
+      target: RecordTarget.fromAlias(new BucketWebsiteTarget(this.siteBucket))
+    })
   }
 }
