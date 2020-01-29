@@ -6,6 +6,11 @@ A CDK construct that sets up a end to end pipeline to build, test and deploy
 your static site automatically when a new version is pushed to your git repository.
 
 ## Installation
+Add the `@pacabytes` scope to your `.npmrc` ([more info](https://help.github.com/en/github/managing-packages-with-github-packages/configuring-npm-for-use-with-github-packages))
+```
+@pacabytes:registry=https://npm.pkg.github.com
+```
+
 `npm install @pacabytes/cdk-static-site`
 
 ## Usage
