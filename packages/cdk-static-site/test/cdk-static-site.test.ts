@@ -1,7 +1,8 @@
 import { expect as expectCDK, haveResource } from '@aws-cdk/assert';
 import { App, Stack, SecretValue } from '@aws-cdk/core';
-import { StaticSite } from '../lib';
 import { HostedZone } from '@aws-cdk/aws-route53';
+
+import { StaticSite } from '../lib';
 
 describe("static site construct", () => {
   it("creates the S3 hosting bucket", () => {

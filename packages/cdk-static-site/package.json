@@ -1,6 +1,6 @@
 {
   "name": "cdk-static-site",
-  "version": "1.1.0-alpha.5",
+  "version": "1.1.0-alpha.6",
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts",
   "scripts": {
@@ -10,13 +10,29 @@
   },
   "devDependencies": {
     "@aws-cdk/assert": "^1.22.0",
+    "@aws-cdk/aws-certificatemanager": "^1.22.0",
+    "@aws-cdk/aws-cloudfront": "^1.22.0",
+    "@aws-cdk/aws-codebuild": "^1.22.0",
+    "@aws-cdk/aws-codedeploy": "^1.22.0",
+    "@aws-cdk/aws-codepipeline": "^1.22.0",
+    "@aws-cdk/aws-codepipeline-actions": "^1.22.0",
+    "@aws-cdk/aws-route53": "^1.22.0",
+    "@aws-cdk/aws-route53-targets": "^1.22.0",
+    "@aws-cdk/aws-s3": "^1.22.0",
+    "@aws-cdk/aws-s3-deployment": "^1.22.0",
+    "@aws-cdk/aws-sns": "^1.22.0",
+    "@aws-cdk/aws-sns-subscriptions": "^1.22.0",
+    "@aws-cdk/aws-sqs": "^1.22.0",
+    "@aws-cdk/core": "^1.22.0",
     "@types/jest": "^24.9.1",
     "@types/node": "10.17.5",
     "jest": "^24.9.0",
     "ts-jest": "^24.1.0",
     "typescript": "^3.7.5"
   },
-  "peerDependencies": {
+  "dependencies": {
+    "@aws-cdk/aws-certificatemanager": "^1.22.0",
+    "@aws-cdk/aws-cloudfront": "^1.22.0",
     "@aws-cdk/aws-codebuild": "^1.22.0",
     "@aws-cdk/aws-codedeploy": "^1.22.0",
     "@aws-cdk/aws-codepipeline": "^1.22.0",
