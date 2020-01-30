@@ -30,7 +30,7 @@
     "ts-jest": "^24.1.0",
     "typescript": "^3.7.5"
   },
-  "peerDependencies": {
+  "dependencies": {
     "@aws-cdk/aws-certificatemanager": "^1.22.0",
     "@aws-cdk/aws-cloudfront": "^1.22.0",
     "@aws-cdk/aws-codebuild": "^1.22.0",
