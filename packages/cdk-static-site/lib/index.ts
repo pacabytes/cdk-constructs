@@ -60,6 +60,7 @@ export class StaticSite extends Construct {
     const { pipelineConfig, domainConfig, cloudFrontConfig } = props;
 
     this.siteBucket = new Bucket(this, "SiteBucket", {
+      bucketName: domainConfig?.domainName ?? undefined,
       publicReadAccess: true,
       websiteIndexDocument: "index.html",
       websiteErrorDocument: "index.html"
