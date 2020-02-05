@@ -1,0 +1,7 @@
+{
+  "references": [
+    {
+      "path": "packages/cdk-static-site"
+    }
+  ]
+}
