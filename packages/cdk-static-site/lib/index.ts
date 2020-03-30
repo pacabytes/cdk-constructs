@@ -54,10 +54,14 @@ export class StaticSite extends Construct {
    */
   public readonly siteBucket: Bucket;
 
+  public readonly pipeline: Pipeline;
+
   constructor(scope: Construct, id: string, props: StaticSiteProps = {}) {
     super(scope, id);
 
     const { pipelineConfig, domainConfig, cloudFrontConfig } = props;
+
+    this.pipeline = new Pipeline(this, "Pipeline");
 
     this.siteBucket = new Bucket(this, "SiteBucket", {
       bucketName: domainConfig?.domainName ?? undefined,
@@ -85,7 +89,6 @@ export class StaticSite extends Construct {
     const sourceOutput = new Artifact();
     const buildOutput = new Artifact();
 
-    const pipeline = new Pipeline(this, "Pipeline");
     const project = new PipelineProject(this, "Project");
 
     const sourceAction = new GitHubSourceAction({
@@ -97,7 +100,7 @@ export class StaticSite extends Construct {
       branch
     });
 
-    pipeline.addStage({
+    this.pipeline.addStage({
       stageName: "Fetch",
       actions: [sourceAction]
     });
@@ -109,7 +112,7 @@ export class StaticSite extends Construct {
       outputs: [buildOutput]
     });
 
-    pipeline.addStage({
+    this.pipeline.addStage({
       stageName: "Build",
       actions: [buildAction]
     });
@@ -120,7 +123,7 @@ export class StaticSite extends Construct {
       bucket: this.siteBucket
     });
 
-    pipeline.addStage({
+    this.pipeline.addStage({
       stageName: "Deploy",
       actions: [deployAction]
     });
